@@ -1,7 +1,5 @@
 import Head from 'next/head'
-import {useEffect} from 'react'
 import {ChakraProvider, extendTheme} from '@chakra-ui/react'
-import {useRouter} from 'next/router'
 import '../styles/globals.css'
 
 const theme = extendTheme({

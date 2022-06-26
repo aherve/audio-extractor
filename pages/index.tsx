@@ -1,20 +1,23 @@
-import {ChangeEvent, EventHandler, useState} from 'react';
+import {ChangeEvent, useState} from 'react';
 import {
   Box,
   Button,
+  Flex,
   Heading,
   Input,
-  FormLabel,
-  UnorderedList,
+  Link,
   ListItem,
-  Link
+  Spacer,
+  UnorderedList,
+  Spinner,
 } from '@chakra-ui/react'
-
 
 export default function Home() {
 
   const [url, setURL] = useState('')
   const [audios, setAudios] = useState([])
+  const [loading, setLoading] = useState(false)
+
   const handleSubmit = (event: ChangeEvent<HTMLFormElement>) => {
     event.preventDefault()
     const val = event.target.url.value
@@ -23,40 +26,65 @@ export default function Home() {
   }
 
   const search = async (url: string) => {
-    const toFetch = `/api/extract?url=${encodeURI(url)}`
-    console.log({toFetch})
-    const data = await fetch(toFetch)
+    setLoading(true)
+    setAudios([])
+    const data = await fetch(`/api/extract?url=${encodeURI(url)}`)
       .then(r => r.json())
-    console.log('data = ', data)
+    setLoading(false)
     setAudios(data.audios)
   }
 
-  return (
-    <>
-      <Heading>Audio Extractor</Heading>
-      <Box>
-        <form onSubmit={handleSubmit}>
-          <FormLabel>URL input</FormLabel>
-          <Input placeholder="Enter a URL" name="url" />
-          <Button type="submit" value="Submit">search</Button>
-        </form>
-      </Box>
-      <Box>
-        <Heading>Results for {url}:</Heading>
-      </Box>
-      <Box>
+  const loader = () => {
+    if (loading) {
+      return (
+        <>
+          <Spinner />
+        </>
+      )
+    }
+  }
+
+  const results = () => {
+    if (!url) {return }
+    return (
+      <>
+        <Heading size="sm" marginBottom='20px'>Results for {url}:</Heading>
+        {loader()}
         <UnorderedList>
           {
             audios.map(a =>
-              <ListItem key={a}>
+              <ListItem key={a} color='blue'>
                 <Link href={a} download isExternal>{a}</Link>
               </ListItem>
             )
           }
         </UnorderedList>
-      </Box>
+      </>
+    )
+  }
+
+  return (
+    <>
+      <Flex direction="column" align='stretch' gap='10px'>
+        <Box margin='20px'>
+          <Flex direction="column" align="center">
+            <Heading>Audio Extractor</Heading>
+            <Box>Extract audio links from any URL</Box>
+          </Flex>
+        </Box>
+        <Spacer />
+        <Box margin='20px'>
+          <form onSubmit={handleSubmit}>
+            <Flex direction='row' gap='5px'>
+              <Input placeholder="Enter a URL" name="url" />
+              <Button type="submit" value="Submit">search</Button>
+            </Flex>
+          </form>
+        </Box>
+        <Box marginTop='50px' margin='20px'>
+          {results()}
+        </Box>
+      </Flex >
     </>
   )
 }
-
-
