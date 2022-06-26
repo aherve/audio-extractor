@@ -1,10 +1,8 @@
 import Head from 'next/head'
-import { useEffect } from 'react'
-import { ChakraProvider, extendTheme } from '@chakra-ui/react'
-import { useRouter } from 'next/router'
+import {useEffect} from 'react'
+import {ChakraProvider, extendTheme} from '@chakra-ui/react'
+import {useRouter} from 'next/router'
 import '../styles/globals.css'
-
-import * as ga from '../lib/ga'
 
 const theme = extendTheme({
   colors: {
@@ -22,24 +20,14 @@ const theme = extendTheme({
   },
 })
 
-function MyApp({ Component, pageProps }) {
-  const router = useRouter()
-  useEffect(() => {
-    const handleRouteChange = (url: any) => {
-      ga.pageview(url)
-    }
-    router.events.on('routeChangeComplete', handleRouteChange)
-    return () => {
-      router.events.off('routeChangeComplete', handleRouteChange)
-    }
-  }, [router.events])
+function MyApp({Component, pageProps}) {
   return (
     <ChakraProvider theme={theme}>
       <Head>
-        <title>Exomodule: next generation bioinformatics platform</title>
+        <title>Audio extractor</title>
         <meta
           name="description"
-          content="Exomodule empowers biologists and bioinformaticians with cutting edge cloud services and infrastructure."
+          content="Extract audio links from an url"
         />
         <link rel="icon" href="/favicon.svg" />
       </Head>

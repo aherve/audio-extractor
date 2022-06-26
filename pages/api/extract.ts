@@ -34,6 +34,7 @@ function findAudios(body: string): string[] {
     m = audioReg.exec(body)
   }
   // return unique array
+  res.sort()
   return res.filter((val, index, self) => self.indexOf(val) === index)
 }
 
